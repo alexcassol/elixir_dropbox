@@ -14,8 +14,8 @@ defmodule ElixirDropbox.Paper.FolderUsers do
   """
   def list(client, doc_id, limit \\ 100) do
     body = %{"doc_id" => doc_id, "limit" => limit}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/paper/docs/folder_users/list", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/paper/docs/folder_users/list", body)
   end
 
   @doc """
@@ -29,7 +29,7 @@ defmodule ElixirDropbox.Paper.FolderUsers do
   """
   def list_continue(client, doc_id, cursor) do
     body = %{"doc_id" => doc_id, "cursor" => cursor}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/paper/docs/folder_users/list/continue", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/paper/docs/folder_users/list/continue", body)
   end
 end

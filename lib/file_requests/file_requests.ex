@@ -20,8 +20,8 @@ defmodule ElixirDropbox.FileRequests do
       "open" => open
     }
 
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/file_requests/create", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/file_requests/create", body)
   end
 
   @doc """
@@ -34,8 +34,8 @@ defmodule ElixirDropbox.FileRequests do
   """
   def get(client, id) do
     body = %{"id" => id}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/file_requests/get", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/file_requests/get", body)
   end
 
   @doc """
@@ -71,7 +71,7 @@ defmodule ElixirDropbox.FileRequests do
       "open" => open
     }
 
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/file_requests/update", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/file_requests/update", body)
   end
 end

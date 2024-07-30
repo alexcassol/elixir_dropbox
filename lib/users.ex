@@ -14,21 +14,18 @@ defmodule ElixirDropbox.Users do
 
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#users-get_current_account
   """
-  @spec get_account(Client, binary) :: Map
+  @spec get_account(Client, binary) :: any
   def get_account(client, id) do
     body = %{"account_id" => id}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/users/get_account", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/users/get_account", body)
   end
 
-  @spec get_account_to_struct(Client, binary) :: Account
+  @spec get_account_to_struct(Client, binary) :: Account | any
   def get_account_to_struct(client, id) do
-    response = get_account(client, id)
-
-    if is_map(response) do
-      to_struct(%ElixirDropbox.Account{}, response)
-    else
-      elem(response, 1)
+    case get_account(client, id) do
+      {:ok, response} -> to_struct(%ElixirDropbox.Account{}, response)
+      {err, _} -> elem(err, 1)
     end
   end
 
@@ -41,9 +38,12 @@ defmodule ElixirDropbox.Users do
 
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#users-get_current_account
   """
-  @spec current_account(Client) :: Map
+  @spec current_account(Client) :: any
   def current_account(client) do
-    post(client, "/users/get_current_account", "null")
+    case post(client, "/users/get_current_account", "null") do
+      {:ok, response} -> response
+      {err, _} -> elem(err, 1)
+    end
   end
 
   @spec current_account_to_struct(Client) :: Account
@@ -60,9 +60,12 @@ defmodule ElixirDropbox.Users do
 
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#users-get_space_usage
   """
-  @spec get_space_usage(Client) :: Map
+  @spec get_space_usage(Client) :: any
   def get_space_usage(client) do
-    post(client, "/users/get_space_usage", "null")
+    case post(client, "/users/get_space_usage", "null") do
+      {:ok, response} -> response
+      {err, _} -> elem(err, 1)
+    end
   end
 
   def get_space_usage_to_struct(client) do
@@ -78,10 +81,13 @@ defmodule ElixirDropbox.Users do
 
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#users-get_account_batch
   """
-  @spec get_account_batch(Client, binary) :: Map
+  @spec get_account_batch(Client, binary) :: any
   def get_account_batch(client, account_ids) do
     body = %{"account_ids" => account_ids}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/users/get_account_batch", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    case post(client, "/users/get_account_batch", body) do
+      {:ok, response} -> response
+      {err, _} -> elem(err, 1)
+    end
   end
 end

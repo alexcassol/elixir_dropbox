@@ -14,8 +14,8 @@ defmodule ElixirDropbox.Paper.SharingPolicy do
   """
   def get(client, doc_id) do
     body = %{"doc_id" => doc_id}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/paper/docs/sharing_policy/get", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/paper/docs/sharing_policy/get", body)
   end
 
   @doc """
@@ -28,7 +28,7 @@ defmodule ElixirDropbox.Paper.SharingPolicy do
   """
   def set(client, doc_id, sharing_policy) do
     body = %{"doc_id" => doc_id, "sharing_policy" => sharing_policy}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/paper/docs/sharing_policy/set", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/paper/docs/sharing_policy/set", body)
   end
 end

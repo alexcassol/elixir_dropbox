@@ -5,8 +5,9 @@ defmodule ElixirDropbox.Client do
 
   @type access_token :: %{access_token: binary}
   @type t :: %__MODULE__{access_token: access_token}
+  @type m :: %__MODULE__{}
 
-  @spec new() :: t
+  @spec new() :: m
   def new(), do: %__MODULE__{}
 
   @spec new(access_token) :: t

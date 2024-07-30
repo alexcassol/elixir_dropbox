@@ -27,8 +27,8 @@ defmodule ElixirDropbox.Files.CopyBatch do
       "allow_ownership_transfer" => allow_ownership_transfer
     }
 
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/copy_batch", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/copy_batch", body)
   end
 
   @doc """
@@ -42,7 +42,7 @@ defmodule ElixirDropbox.Files.CopyBatch do
   """
   def check(client, async_job_id) do
     body = %{"async_job_id" => async_job_id}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/copy_batch/check", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/copy_batch/check", body)
   end
 end

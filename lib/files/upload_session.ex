@@ -20,7 +20,7 @@ defmodule ElixirDropbox.Files.UploadSession do
     }
 
     headers = %{
-      "Dropbox-API-Arg" => Poison.encode!(dropbox_headers),
+      "Dropbox-API-Arg" => Jason.encode!(dropbox_headers),
       "Content-Type" => "application/octet-stream"
     }
 
@@ -51,7 +51,7 @@ defmodule ElixirDropbox.Files.UploadSession do
     }
 
     headers = %{
-      "Dropbox-API-Arg" => Poison.encode!(dropbox_headers),
+      "Dropbox-API-Arg" => Jason.encode!(dropbox_headers),
       "Content-Type" => "application/octet-stream"
     }
 
@@ -92,7 +92,7 @@ defmodule ElixirDropbox.Files.UploadSession do
     }
 
     headers = %{
-      "Dropbox-API-Arg" => Poison.encode!(dropbox_headers),
+      "Dropbox-API-Arg" => Jason.encode!(dropbox_headers),
       "Content-Type" => "application/octet-stream"
     }
 
@@ -117,8 +117,8 @@ defmodule ElixirDropbox.Files.UploadSession do
   """
   def finish_batch(client, entries) do
     body = %{"entries" => entries}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/upload_session/finish_batch", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/upload_session/finish_batch", body)
   end
 
   @doc """
@@ -134,7 +134,7 @@ defmodule ElixirDropbox.Files.UploadSession do
   """
   def finish_batch_check(client, async_job_id) do
     body = %{"async_job_id" => async_job_id}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/upload_session/finish_batch/check", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/upload_session/finish_batch/check", body)
   end
 end

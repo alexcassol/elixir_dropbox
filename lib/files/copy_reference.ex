@@ -16,8 +16,8 @@ defmodule ElixirDropbox.Files.CopyReference do
   """
   def get(client, path) do
     body = %{"path" => path}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/copy_reference/get", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/copy_reference/get", body)
   end
 
   @doc """
@@ -31,7 +31,7 @@ defmodule ElixirDropbox.Files.CopyReference do
   """
   def save(client, copy_reference, path) do
     body = %{"copy_reference" => copy_reference, "path" => path}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/copy_reference/save", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/copy_reference/save", body)
   end
 end

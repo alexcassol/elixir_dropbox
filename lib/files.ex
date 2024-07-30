@@ -5,6 +5,7 @@ defmodule ElixirDropbox.Files do
   """
   import ElixirDropbox
   import ElixirDropbox.Utils
+  alias ElixirDropbox.Client
 
   @doc """
   Create folder returns map
@@ -15,11 +16,11 @@ defmodule ElixirDropbox.Files do
 
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#files-create_folder
   """
-  @spec create_folder(Client, binary) :: Map
+  @spec create_folder(Client.t(), binary) :: any
   def create_folder(client, path) do
     body = %{"path" => path}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/create_folder_v2", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/create_folder_v2", body)
   end
 
   @doc """
@@ -31,14 +32,11 @@ defmodule ElixirDropbox.Files do
 
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#files-create_folder
   """
-  @spec create_folder_to_struct(Client, binary) :: Map
+  @spec create_folder_to_struct(Client.t(), binary) :: Folder | any
   def create_folder_to_struct(client, path) do
-    response = create_folder(client, path)
-
-    if is_map(response) do
-      to_struct(%ElixirDropbox.Folder{}, response)
-    else
-      elem(response, 1)
+    case create_folder(client, path) do
+      {:ok, response} -> to_struct(%ElixirDropbox.Folder{}, response)
+      {err, _} -> elem(err, 1)
     end
   end
 
@@ -57,8 +55,8 @@ defmodule ElixirDropbox.Files do
   """
   def delete_folder(client, path) do
     body = %{"path" => path}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/delete_v2", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/delete_v2", body)
   end
 
   @doc """
@@ -71,12 +69,9 @@ defmodule ElixirDropbox.Files do
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#files-delete
   """
   def delete_folder_to_struct(client, path) do
-    response = delete_folder(client, path)
-
-    if is_map(response) do
-      to_struct(%ElixirDropbox.Folder{}, response)
-    else
-      elem(response, 1)
+    case delete_folder(client, path) do
+      {:ok, response} -> to_struct(%ElixirDropbox.Folder{}, response)
+      {err, _} -> elem(err, 1)
     end
   end
 
@@ -92,8 +87,8 @@ defmodule ElixirDropbox.Files do
   """
   def copy(client, from_path, to_path) do
     body = %{"from_path" => from_path, "to_path" => to_path}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/copy_v2", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/copy_v2", body)
   end
 
   @doc """
@@ -108,8 +103,8 @@ defmodule ElixirDropbox.Files do
   """
   def move(client, from_path, to_path) do
     body = %{"from_path" => from_path, "to_path" => to_path}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/move", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/move", body)
   end
 
   @doc """
@@ -123,8 +118,8 @@ defmodule ElixirDropbox.Files do
   """
   def restore(client, path, rev) do
     body = %{"path" => path, "rev" => rev}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/restore", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/restore", body)
   end
 
   @doc """
@@ -145,8 +140,8 @@ defmodule ElixirDropbox.Files do
       "mode" => mode
     }
 
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/search", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/search", body)
   end
 
   @doc """
@@ -167,7 +162,7 @@ defmodule ElixirDropbox.Files do
     }
 
     headers = %{
-      "Dropbox-API-Arg" => Poison.encode!(dropbox_headers),
+      "Dropbox-API-Arg" => Jason.encode!(dropbox_headers),
       "Content-Type" => "application/octet-stream"
     }
 
@@ -194,7 +189,7 @@ defmodule ElixirDropbox.Files do
       :path => path
     }
 
-    headers = %{"Dropbox-API-Arg" => Poison.encode!(dropbox_headers)}
+    headers = %{"Dropbox-API-Arg" => Jason.encode!(dropbox_headers)}
 
     download_request(
       client,
@@ -221,7 +216,7 @@ defmodule ElixirDropbox.Files do
       :size => size
     }
 
-    headers = %{"Dropbox-API-Arg" => Poison.encode!(dropbox_headers)}
+    headers = %{"Dropbox-API-Arg" => Jason.encode!(dropbox_headers)}
 
     download_request(
       client,
@@ -244,13 +239,13 @@ defmodule ElixirDropbox.Files do
   """
   def get_thumbnail_batch(client, entries) do
     body = %{"entries" => entries}
-    result = to_string(Poison.Encoder.encode(body, []))
+    # result = to_string(Jason.encoder().encode(body, []))
 
     post_url(
       client,
       Application.get_env(:elixir_dropbox, :upload_url),
       "/files/get_thumbnail_batch",
-      result
+      body
     )
   end
 
@@ -268,7 +263,7 @@ defmodule ElixirDropbox.Files do
       :path => path
     }
 
-    headers = %{"Dropbox-API-Arg" => Poison.encode!(dropbox_headers)}
+    headers = %{"Dropbox-API-Arg" => Jason.encode!(dropbox_headers)}
 
     download_request(
       client,
@@ -290,8 +285,8 @@ defmodule ElixirDropbox.Files do
   """
   def get_temporary_link(client, path) do
     body = %{"path" => path}
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/get_temporary_link", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/get_temporary_link", body)
   end
 
   @doc """
@@ -317,7 +312,7 @@ defmodule ElixirDropbox.Files do
       "include_has_explicit_shared_members" => include_has_explicit_shared_members
     }
 
-    result = to_string(Poison.Encoder.encode(body, []))
-    post(client, "/files/get_metadata", result)
+    # result = to_string(Jason.encoder().encode(body, []))
+    post(client, "/files/get_metadata", body)
   end
 end
