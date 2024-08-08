@@ -22,7 +22,9 @@ defmodule ElixirDropbox do
   @spec process_response(Req.Response.t()) :: response
   def process_response(%Req.Response{status: 200, body: body}), do: {:ok, body}
 
-  def process_response(%Req.Response{status: status_code, body: body}) do
+  def process_response(%Req.Response{status: status_code, body: body} = resp) do
+    IO.inspect(resp, label: "resp, status_code: #{status_code}")
+
     cond do
       status_code in 400..599 ->
         {{:status_code, status_code}, body}
