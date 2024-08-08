@@ -50,7 +50,7 @@ defmodule ElixirDropbox.FileRequests do
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#file_requests-list
   """
   def list(client) do
-    post(client, "/file_requests/list", "null")
+    post(client, "/file_requests/list")
   end
 
   @doc """

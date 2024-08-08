@@ -6,12 +6,16 @@ defmodule ElixirDropbox do
   @type response :: {any, any}
 
   @base_url Application.compile_env(:elixir_dropbox, :base_url)
+  def post(client, url, body \\ "")
 
-  def post(client, url, body \\ "") do
+  def post(client, url, body) when byte_size(body) > 0 do
     new_req(client, headers: json_headers())
     |> post_request(url, body)
+  end
 
-    # post_request(client, "#{@base_url}#{url}", body, headers)
+  def post(client, url, body) do
+    new_req(client)
+    |> post_request(url, body)
   end
 
   def post_url(client, base_url, url, body \\ "") do
@@ -22,8 +26,8 @@ defmodule ElixirDropbox do
   @spec process_response(Req.Response.t()) :: response
   def process_response(%Req.Response{status: 200, body: body}), do: {:ok, body}
 
-  def process_response(%Req.Response{status: status_code, body: body} = resp) do
-    IO.inspect(resp, label: "resp, status_code: #{status_code}")
+  def process_response(%Req.Response{status: status_code, body: body} = _resp) do
+    # IO.inspect(resp, label: "resp, status_code: #{status_code}")
 
     cond do
       status_code in 400..599 ->
@@ -42,27 +46,27 @@ defmodule ElixirDropbox do
     end
   end
 
-  def post_request(req, url, body, headers \\ []) do
-    Req.post!(req, url: url, json: body, headers: headers)
-    |> process_response
+  def post_request(req, url, body \\ "", headers \\ []) do
+    json_opt =
+      if body == "" do
+        []
+      else
+        [json: body]
+      end
 
-    # HTTPoison.post!(url, body, headers) |> process_response
+    Req.post!(req, [url: url, headers: headers] ++ json_opt)
+    |> process_response()
   end
 
   def upload_request(client, base_url, url, data, headers) do
     new_req(client, base_url: base_url, headers: headers)
     |> post_request(url, {:file, data})
-
-    # post_request(client, "#{base_url}#{url}", {:file, data}, headers)
   end
 
   def download_request(client, base_url, url, data, headers) do
     new_req(client, base_url: base_url, headers: headers)
     |> Req.post!(url: url, body: data)
     |> download_response
-
-    # headers = Map.merge(headers, headers(client))
-    # HTTPoison.post!("#{base_url}#{url}", data, headers) |> download_response
   end
 
   def new_req(client, opts \\ []) do
@@ -70,8 +74,6 @@ defmodule ElixirDropbox do
     headers = Keyword.get(opts, :headers, [])
 
     Req.new(base_url: base_url, headers: headers, auth: {:bearer, client.access_token})
-
-    # %{"Authorization" => "Bearer #{client.access_token}"}
   end
 
   def json_headers do

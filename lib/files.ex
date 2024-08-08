@@ -36,7 +36,7 @@ defmodule ElixirDropbox.Files do
   def create_folder_to_struct(client, path) do
     case create_folder(client, path) do
       {:ok, response} -> to_struct(%ElixirDropbox.Folder{}, response)
-      {err, _} -> elem(err, 1)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
   end
 
@@ -71,7 +71,7 @@ defmodule ElixirDropbox.Files do
   def delete_folder_to_struct(client, path) do
     case delete_folder(client, path) do
       {:ok, response} -> to_struct(%ElixirDropbox.Folder{}, response)
-      {err, _} -> elem(err, 1)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
   end
 

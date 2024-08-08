@@ -25,7 +25,7 @@ defmodule ElixirDropbox.Users do
   def get_account_to_struct(client, id) do
     case get_account(client, id) do
       {:ok, response} -> to_struct(%ElixirDropbox.Account{}, response)
-      {err, _} -> elem(err, 1)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
   end
 
@@ -40,9 +40,9 @@ defmodule ElixirDropbox.Users do
   """
   @spec current_account(Client) :: any
   def current_account(client) do
-    case post(client, "/users/get_current_account", "null") do
+    case post(client, "/users/get_current_account") do
       {:ok, response} -> response
-      {err, _} -> elem(err, 1)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
   end
 
@@ -62,9 +62,9 @@ defmodule ElixirDropbox.Users do
   """
   @spec get_space_usage(Client) :: any
   def get_space_usage(client) do
-    case post(client, "/users/get_space_usage", "null") do
+    case post(client, "/users/get_space_usage") do
       {:ok, response} -> response
-      {err, _} -> elem(err, 1)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
   end
 
@@ -87,7 +87,7 @@ defmodule ElixirDropbox.Users do
     # result = to_string(Jason.encoder().encode(body, []))
     case post(client, "/users/get_account_batch", body) do
       {:ok, response} -> response
-      {err, _} -> elem(err, 1)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
   end
 end

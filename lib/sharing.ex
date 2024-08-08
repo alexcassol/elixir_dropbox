@@ -32,7 +32,7 @@ defmodule ElixirDropbox.Sharing do
   def create_shared_link_to_struct(client, path) do
     case create_shared_link(client, path) do
       {:ok, response} -> to_struct(%ElixirDropbox.SharedLink{}, response)
-      {err, _} -> elem(err, 1)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
   end
 end
