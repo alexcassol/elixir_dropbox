@@ -29,11 +29,6 @@ defmodule ElixirDropbox.Users do
       response when is_binary(response) -> to_struct(%ElixirDropbox.Account{}, response)
       error -> error
     end
-
-    case get_account(client, id) do
-      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
-      response -> to_struct(%ElixirDropbox.Account{}, response)
-    end
   end
 
   @doc """
