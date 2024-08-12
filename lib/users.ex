@@ -50,7 +50,10 @@ defmodule ElixirDropbox.Users do
 
   @spec current_account_to_struct(String | Tuple) :: Account
   def current_account_to_struct(client) do
-    to_struct(%ElixirDropbox.Account{}, current_account(client))
+    case current_account(client) do
+      {:ok, response} -> to_struct(%ElixirDropbox.Account{}, response)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
+    end
   end
 
   @doc """
@@ -71,7 +74,10 @@ defmodule ElixirDropbox.Users do
   end
 
   def get_space_usage_to_struct(client) do
-    to_struct(%ElixirDropbox.SpaceUsage{}, get_space_usage(client))
+    case get_space_usage(client) do
+      {:ok, response} -> to_struct(%ElixirDropbox.SpaceUsage{}, response)
+      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
+    end
   end
 
   @doc """
