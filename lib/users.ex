@@ -26,6 +26,11 @@ defmodule ElixirDropbox.Users do
   @spec get_account_to_struct(Client, binary) :: Account | any
   def get_account_to_struct(client, id) do
     case get_account(client, id) do
+      response when is_binary(response) -> to_struct(%ElixirDropbox.Account{}, response)
+      error -> error
+    end
+
+    case get_account(client, id) do
       {{:status_code, status_code}, body} -> {:error, {status_code, body}}
       response -> to_struct(%ElixirDropbox.Account{}, response)
     end
@@ -42,7 +47,7 @@ defmodule ElixirDropbox.Users do
   """
   @spec current_account(Client) :: String | Tuple
   def current_account(client) do
-    case post(client, "/users/get_current_account") do
+    post(client, "/users/get_current_account") do
       {:ok, response} -> response
       {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
@@ -51,8 +56,8 @@ defmodule ElixirDropbox.Users do
   @spec current_account_to_struct(String | Tuple) :: Account
   def current_account_to_struct(client) do
     case current_account(client) do
-      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
-      response -> to_struct(%ElixirDropbox.Account{}, response)
+      response when is_binary(response) -> to_struct(%ElixirDropbox.Account{}, response)
+      error -> error
     end
   end
 
@@ -75,8 +80,8 @@ defmodule ElixirDropbox.Users do
 
   def get_space_usage_to_struct(client) do
     case get_space_usage(client) do
-      {{:status_code, status_code}, body} -> {:error, {status_code, body}}
-      response -> to_struct(%ElixirDropbox.SpaceUsage{}, response)
+      response when is_binary(response) -> to_struct(%ElixirDropbox.SpaceUsage{}, response)
+      error -> error
     end
   end
 
