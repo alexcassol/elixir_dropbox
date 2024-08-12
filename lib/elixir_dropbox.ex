@@ -3,7 +3,10 @@ defmodule ElixirDropbox do
   ElixirDropbox is a wrapper for Dropbox API V2
   """
 
-  @type response :: {any, any}
+  @type response :: {:ok, String.t()} | {{:status_code, integer()}, String.t()}
+
+  @type response_download ::
+          %{body: String.t(), headers: list()} | {{:status_code, integer()}, String.t()}
 
   @base_url Application.compile_env(:elixir_dropbox, :base_url)
   def post(client, url, body \\ "")
@@ -26,8 +29,8 @@ defmodule ElixirDropbox do
   @spec process_response(Req.Response.t()) :: response
   def process_response(%Req.Response{status: 200, body: body}), do: {:ok, body}
 
-  def process_response(%Req.Response{status: status_code, body: body} = _resp) do
-    # IO.inspect(resp, label: "resp, status_code: #{status_code}")
+  def process_response(%Req.Response{status: status_code, body: body} = resp) do
+    #  IO.inspect(resp, label: "resp, status_code: #{status_code}")
 
     cond do
       status_code in 400..599 ->
@@ -35,7 +38,7 @@ defmodule ElixirDropbox do
     end
   end
 
-  @spec download_response(Req.Response.t()) :: response
+  @spec download_response(Req.Response.t()) :: response_download
   def download_response(%Req.Response{status: 200, body: body, headers: headers}),
     do: %{body: body, headers: headers}
 
