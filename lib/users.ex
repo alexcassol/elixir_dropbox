@@ -2,6 +2,8 @@ defmodule ElixirDropbox.Users do
   @moduledoc """
   This namespace contains endpoints and data types for user management.
   """
+  alias ElixirDropbox.Client
+  alias ElixirDropbox.Account
   import ElixirDropbox
   import ElixirDropbox.Utils
 
@@ -38,7 +40,7 @@ defmodule ElixirDropbox.Users do
 
   More info at: https://www.dropbox.com/developers/documentation/http/documentation#users-get_current_account
   """
-  @spec current_account(Client) :: any
+  @spec current_account(Client) :: String | Tuple
   def current_account(client) do
     case post(client, "/users/get_current_account") do
       {:ok, response} -> response
@@ -46,7 +48,7 @@ defmodule ElixirDropbox.Users do
     end
   end
 
-  @spec current_account_to_struct(Client) :: Account
+  @spec current_account_to_struct(String | Tuple) :: Account
   def current_account_to_struct(client) do
     to_struct(%ElixirDropbox.Account{}, current_account(client))
   end
