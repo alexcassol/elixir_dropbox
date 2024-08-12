@@ -47,7 +47,7 @@ defmodule ElixirDropbox.Users do
   """
   @spec current_account(Client) :: String | Tuple
   def current_account(client) do
-    post(client, "/users/get_current_account") do
+    case post(client, "/users/get_current_account") do
       {:ok, response} -> response
       {{:status_code, status_code}, body} -> {:error, {status_code, body}}
     end
