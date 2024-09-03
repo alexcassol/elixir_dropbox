@@ -3,7 +3,6 @@ defmodule ElixirDropbox.Users do
   This namespace contains endpoints and data types for user management.
   """
   alias ElixirDropbox.Client
-  alias ElixirDropbox.Account
   import ElixirDropbox
   import ElixirDropbox.Utils
 
